@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <!-- Developed by Society of AI -->
+    <head>
+        <link rel="stylesheet" type="text/css" href="/static/style.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <h1><font color='indigo'>Health Safety App</font></h1>
+        <div>
+        <div id="chatbox">
+            <h3><p class="botText">
+                <span><font color='blue'><i>Welcome to healthsafety chatbot. Type in your accident experience to understand its severity</i></font></span>
+            </p></h3>
+        </div>
+        <div id="userInput">
+            <textarea id="textInput" name="msg" placeholder="Message"></textarea>
+            <input id="buttonInput" type="submit" value="Send">
+        </div>
+        <script>			
+            $(document).ready(function() {
+                function getBotResponse() {
+                    var rawText = $('#textInput').val();
+                    var userHtml = '<p class="userText"><span>' + "You : "+rawText + '</span></p>';
+                    $('#textInput').val("");
+                    $('#chatbox').append(userHtml);
+					
+					var endpoint = "/getChatBotResponse?review="+rawText;
+					// alert(endpoint);
+					
+                    document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+                    $.get(endpoint, { msg: rawText }).done(function(data) {
+						
+						if(data == "Hello! Type in your accident description"){
+						data = "Bot : Hello! Type in your accident description";
+						}
+						else if(data == "I hope I was able to assist you, Good Bye"){
+						data = "Bot : I hope I was able to assist you, Good Bye";
+						}
+						else {
+						 data = "Bot : Potential accident level identified - "+data ;
+						}
+						
+                        var botHtml = '<p class="botText"><span>' + data + '</span></p>';
+                        $("#chatbox").append(botHtml);
+                        document.getElementById('userInput').scrollIntoView({block: 'start', behavior: 'smooth'});
+                    });
+                }
+                $('#textInput').keypress(function(e) {
+                    if(e.which == 13) {
+                        getBotResponse();
+                    }
+                });
+                $('#buttonInput').click(function() {
+                    getBotResponse();
+                })
+            });  
+        </script>
+        </div>
+    </body>
+</html>
